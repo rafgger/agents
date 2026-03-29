@@ -4,9 +4,10 @@ from research_manager import ResearchManager
 
 load_dotenv(override=True)
 
-
+# run with: uv run deep_research.py
 async def run(query: str):
     async for chunk in ResearchManager().run(query):
+        # yielding each chunk as it comes in allows us to stream the report in the UI
         yield chunk
 
 
