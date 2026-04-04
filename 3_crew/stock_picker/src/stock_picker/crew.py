@@ -8,7 +8,7 @@ from crewai.memory import LongTermMemory, ShortTermMemory, EntityMemory
 from crewai.memory.storage.rag_storage import RAGStorage
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 
-class TrendingCompany(BaseModel):
+class TrendingCompany(BaseModel): # structured output
     """ A company that is in the news and attracting attention """
     name: str = Field(description="Company name")
     ticker: str = Field(description="Stock ticker symbol")
@@ -40,17 +40,17 @@ class StockPicker():
     @agent
     def trending_company_finder(self) -> Agent:
         return Agent(config=self.agents_config['trending_company_finder'],
-                     tools=[SerperDevTool()], memory=True)
+                     tools=[SerperDevTool()], memory=True) # enable memory
     
     @agent
     def financial_researcher(self) -> Agent:
         return Agent(config=self.agents_config['financial_researcher'], 
                      tools=[SerperDevTool()])
 
-    @agent
+    @agent # with push notification tool
     def stock_picker(self) -> Agent:
         return Agent(config=self.agents_config['stock_picker'], 
-                     tools=[PushNotificationTool()], memory=True)
+                     tools=[PushNotificationTool()], memory=True) # enable memory
     
     @task
     def find_trending_companies(self) -> Task:
@@ -81,16 +81,16 @@ class StockPicker():
 
         manager = Agent(
             config=self.agents_config['manager'],
-            allow_delegation=True
+            allow_delegation=True # allow hierarchical delegation
         )
             
         return Crew(
             agents=self.agents,
             tasks=self.tasks, 
-            process=Process.hierarchical,
+            process=Process.hierarchical, # hierarchical, not sequential
             verbose=True,
             manager_agent=manager,
-            memory=True,
+            memory=True, # memory enabled
             # Long-term memory for persistent storage across sessions
             long_term_memory = LongTermMemory(
                 storage=LTMSQLiteStorage(

@@ -5,7 +5,7 @@ import os
 import requests
 
 
-class PushNotification(BaseModel):
+class PushNotification(BaseModel): # notification input
     """A message to be sent to the user"""
     message: str = Field(..., description="The message to be sent to the user.")
 
@@ -19,7 +19,7 @@ class PushNotificationTool(BaseTool):
     args_schema: Type[BaseModel] = PushNotification
 
     def _run(self, message: str) -> str:
-        pushover_user = os.getenv("PUSHOVER_USER")
+        pushover_user = os.getenv("PUSHOVER_USER") # using pushover from previous week
         pushover_token = os.getenv("PUSHOVER_TOKEN")
         pushover_url = "https://api.pushover.net/1/messages.json"
 
